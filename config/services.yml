@@ -1,0 +1,54 @@
+parameters:
+  version: 1.0
+  google_app_name: 'Google Sheets and PHP'
+  google_scopes:
+    - 'https://www.googleapis.com/auth/spreadsheets'
+  google_access_type: 'offline'
+  google_auth_config: '%app_dir%/config/google/keys.json'
+
+services:
+  _defaults:
+    autowire: true
+    public: false
+    bind:
+      string $version: '%version%'
+
+  _instanceof:
+    Symfony\Component\Console\Command\Command:
+      tags: ['command']
+
+  App\:
+    resource: '../src/*'
+#  App\Commands\ParseXmlCommand:
+#    tags: ['command']
+
+  App\Application:
+    public: true
+    arguments:
+      - !tagged_iterator command
+
+  Google\Client:
+    calls:
+      - setApplicationName: ['%google_app_name%']
+      - setScopes: ['%google_scopes%']
+      - setAccessType: ['%google_access_type%']
+      - setAuthConfig: ['%google_auth_config%']
+
+  Google\Service\Sheets:
+    arguments:
+      - '@Google\Client'
+
+monolog:
+  handlers:
+    # this "file_log" key could be anything
+    file_log:
+      type: stream
+      # log to var/log/(environment).log
+      path: "%kernel.logs_dir%/%kernel.environment%.log"
+      # log *all* messages (debug is lowest level)
+      level: debug
+
+    syslog_handler:
+      type: syslog
+      # log error-level messages and higher
+      level: error
