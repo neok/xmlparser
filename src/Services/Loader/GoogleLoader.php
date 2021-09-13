@@ -4,14 +4,14 @@ namespace App\Services\Loader;
 
 use App\Dto\GoogleSheetItemDto;
 use App\Services\GoogleSheetsManager;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
+
 
 /**
  * Class GoogleLoader
  */
 class GoogleLoader implements LoaderInterface
 {
-    use LoggerAwareTrait;
 
     /**
      * @var GoogleSheetsManager
@@ -24,11 +24,15 @@ class GoogleLoader implements LoaderInterface
     protected $num = 1;
 
     /**
-     * @param GoogleSheetsManager $manager
+     * @var LoggerInterface
      */
-    public function __construct(GoogleSheetsManager $manager)
+    protected $logger;
+
+
+    public function __construct(GoogleSheetsManager $manager, LoggerInterface  $logger)
     {
         $this->manager = $manager;
+        $this->logger = $logger;
     }
 
 

@@ -4,7 +4,9 @@ parameters:
   google_scopes:
     - 'https://www.googleapis.com/auth/spreadsheets'
   google_access_type: 'offline'
-  google_auth_config: '%app_dir%/config/google/keys.json'
+#  google_auth_config: '%app_dir%/config/google/keys.json'
+  log_path: '/tmp/project.log'
+  log_level: 'error'
 
 services:
   _defaults:
@@ -12,6 +14,7 @@ services:
     public: false
     bind:
       string $version: '%version%'
+      $logger: '@Monolog\Logger'
 
   _instanceof:
     Symfony\Component\Console\Command\Command:
@@ -19,8 +22,7 @@ services:
 
   App\:
     resource: '../src/*'
-#  App\Commands\ParseXmlCommand:
-#    tags: ['command']
+
 
   App\Application:
     public: true
@@ -32,23 +34,18 @@ services:
       - setApplicationName: ['%google_app_name%']
       - setScopes: ['%google_scopes%']
       - setAccessType: ['%google_access_type%']
-      - setAuthConfig: ['%google_auth_config%']
+#      - setAuthConfig: ['%google_auth_config%']
 
   Google\Service\Sheets:
     arguments:
       - '@Google\Client'
 
-monolog:
-  handlers:
-    # this "file_log" key could be anything
-    file_log:
-      type: stream
-      # log to var/log/(environment).log
-      path: "%kernel.logs_dir%/%kernel.environment%.log"
-      # log *all* messages (debug is lowest level)
-      level: debug
+  Monolog\Handler\StreamHandler:
+    arguments:
+      - '%log_path%'
+      - '%log_level%'
 
-    syslog_handler:
-      type: syslog
-      # log error-level messages and higher
-      level: error
+  Monolog\Logger:
+    arguments: ['main']
+    calls:
+      - pushHandler: ['@Monolog\Handler\StreamHandler']

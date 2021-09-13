@@ -13,7 +13,7 @@
         "ext-xmlreader": "*",
         "ext-libxml": "*",
         "ext-simplexml": "*",
-        "symfony/monolog-bundle": "^3.7"
+        "monolog/monolog": "^2.3"
     },
     "autoload": {
         "psr-4": { "App\\": "src/" }
