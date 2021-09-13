@@ -29,7 +29,7 @@ class XmlExtractor implements ExtractorInterface
                 $dataItem = [];
 
                 foreach ($item as $k => $el) {
-                    $dataItem[$k] = (string) $el;
+                    $dataItem[$k] = (string)$el;
                 }
                 $res[] = $dataItem;
                 if (count($res) % self::BATCH_SIZE === 0) {

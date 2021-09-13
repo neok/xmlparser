@@ -3,9 +3,7 @@
 namespace App\Commands;
 
 use App\Services\Extractor\ExtractorInterface;
-use App\Services\Extractor\XmlExtractor;
 use App\Services\FileManager;
-//use App\Services\GoogleClient;
 use App\Services\Loader\LoaderInterface;
 use App\Services\Transformer\DataTransformerInterface;
 use App\Services\XmlFileManager;
@@ -45,19 +43,28 @@ class ParseXmlCommand extends Command
      */
     private $googleClient;
 
+    /**
+     * @param string|null $name
+     * @param XmlFileManager $fileManager
+     * @param ExtractorInterface $extractor
+     * @param LoaderInterface $loader
+     * @param DataTransformerInterface $dataTransformer
+     * @param Client $googleClient
+     */
     public function __construct(
-        string $name = null,
-        XmlFileManager $fileManager,
-        ExtractorInterface $extractor,
-        LoaderInterface $loader,
+        string                   $name = null,
+        XmlFileManager           $fileManager,
+        ExtractorInterface       $extractor,
+        LoaderInterface          $loader,
         DataTransformerInterface $dataTransformer,
-        Client $googleClient
-    ) {
+        Client                   $googleClient
+    )
+    {
         $this->fileManager = $fileManager;
         $this->extractor = $extractor;
         $this->loader = $loader;
         $this->transformer = $dataTransformer;
-        $this->googleClient= $googleClient;
+        $this->googleClient = $googleClient;
         parent::__construct($name);
     }
 
@@ -94,15 +101,11 @@ class ParseXmlCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($config = $input->getArgument('google_config')) {
-
             $this->googleClient->setAuthConfig($config);
         }
         $progress = new ProgressBar($output);
         $progress->setFormat('verbose');
         $progress->start();
-//        $fileName = __DIR__ . '/../../data/coffee_feed.xml';
-//        $fileName = __DIR__ . '/../../data/file_613c4c75a13a54.37883187';
-//        $id = '1cTwceK2LHJlss3LjDbEWInueDeOUsFP3dSNsT5EqK1E';
 
         foreach ($this->extractor->extract($this->pathToFile, $input->getArgument('node_type')) as $el) {
             $this->loader->load(

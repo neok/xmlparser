@@ -45,14 +45,13 @@ class GoogleLoader implements LoaderInterface
     {
         $objects = [];
         foreach ($data as $dto) {
-            $this->num++;
             $objects[] = $this->manager->createValueRange($dto->getDataItem(), $this->num);
+            $this->num++;
         }
 
         sleep(2);
         try {
             $this->manager->batchUpdate($objects, $destination);
-
         } catch (\Exception $e) {
             $this->logger->error('Batch update error', [
                 'error_message' => $e->getMessage(),

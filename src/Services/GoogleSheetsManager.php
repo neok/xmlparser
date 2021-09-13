@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-
-
 use Google\Service\Sheets;
 
 /**
@@ -25,7 +23,7 @@ class GoogleSheetsManager
     }
 
     /**
-     * @param array  $objects
+     * @param array $objects
      * @param string $sheetId
      *
      * @return Sheets\BatchUpdateValuesResponse
@@ -41,14 +39,14 @@ class GoogleSheetsManager
 
     /**
      * @param array $values
-     * @param int   $itemNumber
+     * @param int $itemNumber
      *
      * @return \Google_Service_Sheets_ValueRange
      */
     public function createValueRange(array $values, int $itemNumber): \Google_Service_Sheets_ValueRange
     {
         $valueRange = new \Google_Service_Sheets_ValueRange();
-        $valueRange->setRange("A". $itemNumber . ":Z900");
+        $valueRange->setRange("A" . $itemNumber . ":Z900");
         $valueRange->setValues([$values]);
 
         return $valueRange;
